@@ -1,7 +1,7 @@
 import { queryAll, acceptance } from "discourse/tests/helpers/qunit-helpers";
 import { visit } from "@ember/test-helpers";
 import { test } from "qunit";
-import compile from "handlebars-compiler";
+import hbs from "htmlbars-inline-precompile";
 import {
   addRawTemplate,
   removeRawTemplate,
@@ -14,7 +14,7 @@ acceptance("Raw Plugin Outlet", function (needs) {
   needs.hooks.beforeEach(() => {
     addRawTemplate(
       CONNECTOR,
-      compile(`<span class='topic-lala'>{{context.topic.id}}</span>`)
+      hbs`<span class='topic-lala'>{{context.topic.id}}</span>`
     );
   });
 

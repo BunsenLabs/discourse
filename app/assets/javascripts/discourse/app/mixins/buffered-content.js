@@ -1,7 +1,7 @@
 import EmberObjectProxy from "@ember/object/proxy";
 import Mixin from "@ember/object/mixin";
 import { computed } from "@ember/object";
-import BufferedProxy from "ember-buffered-proxy/proxy";
+import BufferedProxy from "ember-buffered-proxy/mixin";
 
 export function bufferedProperty(property) {
   const mixin = {
