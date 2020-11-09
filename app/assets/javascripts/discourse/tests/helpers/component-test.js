@@ -33,6 +33,12 @@ export function setupRenderingTest(hooks) {
   });
 }
 
+if (typeof andThen === "undefined") {
+  window.andThen = function (callback) {
+    return callback.call(this);
+  };
+}
+
 export default function (name, opts) {
   opts = opts || {};
 
@@ -40,7 +46,7 @@ export default function (name, opts) {
     return;
   }
 
-  test(name, function (assert) {
+  test(name, async function (assert) {
     this.site = Site.current();
     this.session = Session.current();
 
@@ -82,15 +88,15 @@ export default function (name, opts) {
       opts.beforeEach.call(this, store);
     }
 
-    andThen(() => {
+    await andThen(() => {
       return this.render(opts.template);
     });
 
-    andThen(() => {
+    await andThen(() => {
       return opts.test.call(this, assert);
-    }).finally(() => {
+    }).finally(async () => {
       if (opts.afterEach) {
-        andThen(() => {
+        await andThen(() => {
           return opts.afterEach.call(opts);
         });
       }
