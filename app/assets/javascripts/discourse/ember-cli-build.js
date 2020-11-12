@@ -32,9 +32,11 @@ module.exports = function (defaults) {
 
   // WARNING: We should only import scripts here if they are not in NPM.
   // For example: our very specific version of bootstrap-modal.
+  app.import(vendorJs + "bootbox.js");
   app.import(vendorJs + "bootstrap-modal.js");
   app.import(vendorJs + "jquery.ui.widget.js");
   app.import(vendorJs + "jquery.fileupload.js");
+  app.import(vendorJs + "jquery.autoellipsis-1.0.10.js");
 
   return mergeTrees([
     app.toTree(),

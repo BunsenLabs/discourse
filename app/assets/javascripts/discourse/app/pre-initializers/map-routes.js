@@ -1,4 +1,3 @@
-import Application from "@ember/application";
 import { mapRoutes } from "discourse/mapping-router";
 
 export default {
@@ -7,14 +6,9 @@ export default {
 
   initialize(container, app) {
     app.unregister("router:main");
-    app.register("router:main", mapRoutes());
+    let router = mapRoutes();
 
-    // HACK to fix: https://github.com/emberjs/ember.js/issues/10310
-    const originalBuildInstance = Application.prototype.buildInstance;
-
-    Application.prototype.buildInstance = function () {
-      this.buildRegistry();
-      return originalBuildInstance.apply(this);
-    };
+    app.register("router:main", router);
+    container.registry.register("router:main", router);
   },
 };

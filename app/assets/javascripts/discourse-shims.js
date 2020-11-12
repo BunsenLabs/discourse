@@ -26,10 +26,6 @@ define("ember-buffered-proxy/mixin", ["exports"], function (__exports__) {
   __exports__.default = window.BufferedProxy;
 });
 
-define("bootbox", ["exports"], function (__exports__) {
-  __exports__.default = window.bootbox;
-});
-
 define("xss", ["exports"], function (__exports__) {
   __exports__.default = window.filterXSS;
 });

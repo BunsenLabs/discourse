@@ -398,7 +398,7 @@ acceptance(
 
       const selectTopicBtn = queryAll(
         ".feature-topic-on-profile-btn:nth-of-type(1)"
-      );
+      )[0];
       assert.ok(exists(selectTopicBtn), "feature topic button is present");
 
       await click(selectTopicBtn);
@@ -410,7 +410,7 @@ acceptance(
 
       const topicRadioBtn = queryAll(
         'input[name="choose_topic_id"]:nth-of-type(1)'
-      );
+      )[0];
       assert.ok(exists(topicRadioBtn), "Topic options are prefilled");
       await click(topicRadioBtn);
 

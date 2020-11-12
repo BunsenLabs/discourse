@@ -35,9 +35,10 @@ import QUnit, { module } from "qunit";
 import siteFixtures from "discourse/tests/fixtures/site-fixtures";
 import Site from "discourse/models/site";
 import createStore from "discourse/tests/helpers/create-store";
-import { getApplication } from "@ember/test-helpers";
+import { getContext, getApplication } from "@ember/test-helpers";
 import deprecated from "discourse-common/lib/deprecated";
 import sinon from "sinon";
+import { setupApplicationTest } from "ember-qunit";
 
 export function currentUser() {
   return User.create(sessionFixtures["/session/current.json"].current_user);
@@ -201,8 +202,8 @@ export function acceptance(name, optionsOrCallback) {
         resetSite(currentSettings(), siteChanges);
       }
 
-      getApplication().reset();
       this.container = getOwner(this);
+
       setURLContainer(this.container);
       setDefaultOwner(this.container);
 
@@ -242,7 +243,6 @@ export function acceptance(name, optionsOrCallback) {
           initializer.teardown(this.container);
         }
       });
-      app.reset();
 
       // We do this after reset so that the willClearRender will have already fired
       resetWidgetCleanCallbacks();
@@ -288,6 +288,15 @@ export function acceptance(name, optionsOrCallback) {
       hooks.afterEach(setup.afterEach);
       needs.hooks = hooks;
       callback(needs);
+      setupApplicationTest(hooks);
+      needs.hooks.beforeEach(function () {
+        // This hack seems necessary to allow `DiscourseURL` to use the testing router
+        let ctx = getContext();
+        this.container.registry.unregister("router:main");
+        this.container.registry.register("router:main", ctx.owner.router, {
+          instantiate: false,
+        });
+      });
     });
   } else {
     // Old way
@@ -365,8 +374,9 @@ export async function selectDate(selector, date) {
   });
 }
 
-export function queryAll() {
-  return window.find(...arguments);
+export function queryAll(selector, context) {
+  context = context || "#ember-testing";
+  return $(selector, context);
 }
 
 export function invisible(selector) {

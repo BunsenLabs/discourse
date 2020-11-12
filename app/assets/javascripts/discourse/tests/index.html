@@ -15,6 +15,16 @@
 
     {{content-for "head-footer"}}
     {{content-for "test-head-footer"}}
+
+    <style>
+      #ember-testing * {
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
+      }
+    </style>
+
   </head>
   <body>
     {{content-for "body"}}

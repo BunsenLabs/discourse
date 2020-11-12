@@ -110,8 +110,11 @@ export default {
       parseInt(setupData.userColorSchemeId, 10) || null;
     session.userDarkSchemeId = parseInt(setupData.userDarkSchemeId, 10) || -1;
 
-    if (isDevelopment()) {
-      setIconList(JSON.parse(setupData.svgIconList));
+    let iconList = setupData.svgIconList;
+    if (isDevelopment() && iconList) {
+      setIconList(
+        typeof iconList === "string" ? JSON.parse(iconList) : iconList
+      );
     }
 
     if (setupData.s3BaseUrl) {

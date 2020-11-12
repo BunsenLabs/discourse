@@ -4,14 +4,20 @@ import {
   acceptance,
   visible,
 } from "discourse/tests/helpers/qunit-helpers";
-import { click, triggerKeyEvent, fillIn, visit } from "@ember/test-helpers";
+import {
+  click,
+  triggerKeyEvent,
+  fillIn,
+  settled,
+  visit,
+} from "@ember/test-helpers";
 import { test } from "qunit";
 import I18n from "I18n";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { IMAGE_VERSION as v } from "pretty-text/emoji/version";
 
-function selectText(selector) {
+async function selectText(selector) {
   const range = document.createRange();
   const node = document.querySelector(selector);
   range.selectNodeContents(node);
@@ -19,6 +25,7 @@ function selectText(selector) {
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(range);
+  await settled();
 }
 
 acceptance("Topic", function (needs) {
@@ -358,7 +365,7 @@ acceptance("Topic featured links", function (needs) {
 
   test("Quoting a quote keeps the original poster name", async function (assert) {
     await visit("/t/internationalization-localization/280");
-    selectText("#post_5 blockquote");
+    await selectText("#post_5 blockquote");
     await click(".quote-button .insert-quote");
 
     assert.ok(
@@ -370,7 +377,7 @@ acceptance("Topic featured links", function (needs) {
 
   test("Quoting a quote of a different topic keeps the original topic title", async function (assert) {
     await visit("/t/internationalization-localization/280");
-    selectText("#post_9 blockquote");
+    await selectText("#post_9 blockquote");
     await click(".quote-button .insert-quote");
 
     assert.ok(
@@ -384,7 +391,7 @@ acceptance("Topic featured links", function (needs) {
 
   test("Quoting a quote with the Reply button keeps the original poster name", async function (assert) {
     await visit("/t/internationalization-localization/280");
-    selectText("#post_5 blockquote");
+    await selectText("#post_5 blockquote");
     await click(".reply");
 
     assert.ok(
@@ -396,7 +403,7 @@ acceptance("Topic featured links", function (needs) {
 
   test("Quoting a quote with replyAsNewTopic keeps the original poster name", async function (assert) {
     await visit("/t/internationalization-localization/280");
-    selectText("#post_5 blockquote");
+    await selectText("#post_5 blockquote");
     await triggerKeyEvent(document, "keypress", "j".charCodeAt(0));
     await triggerKeyEvent(document, "keypress", "t".charCodeAt(0));
 
@@ -409,7 +416,7 @@ acceptance("Topic featured links", function (needs) {
 
   test("Quoting by selecting text can mark the quote as full", async function (assert) {
     await visit("/t/internationalization-localization/280");
-    selectText("#post_5 .cooked");
+    await selectText("#post_5 .cooked");
     await click(".quote-button .insert-quote");
 
     assert.ok(

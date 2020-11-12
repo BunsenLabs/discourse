@@ -155,4 +155,4 @@ discourseModule("Integration | Component | Widget | post-stream", function (
       );
     },
   });
-);
+});

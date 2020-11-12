@@ -1,7 +1,4 @@
-import {
-  resetSettings,
-  currentSettings,
-} from "discourse/tests/helpers/site-settings";
+import { resetSettings } from "discourse/tests/helpers/site-settings";
 import { getOwner, setDefaultOwner } from "discourse-common/lib/get-owner";
 import { setupURL, setupS3CDN } from "discourse-common/lib/get-url";
 import { createHelperContext } from "discourse-common/lib/helpers";
@@ -27,6 +24,8 @@ import deprecated from "discourse-common/lib/deprecated";
 import sinon from "sinon";
 import { setApplication, setResolver } from "@ember/test-helpers";
 import bootbox from "bootbox";
+import { registerObjects } from "discourse/pre-initializers/inject-discourse-objects";
+import Application from "../app";
 
 const Plugin = $.fn.modal;
 const Modal = Plugin.Constructor;
@@ -55,9 +54,31 @@ function AcceptanceModal(option, _relatedTarget) {
   });
 }
 
-export default function setupTests(app, container) {
+let app;
+let started = false;
+
+function createApplication(config, settings) {
+  app = Application.create(config);
+  setApplication(app);
   setResolver(buildResolver("discourse").create({ namespace: app }));
 
+  let container = app.__registry__.container();
+  app.__container__ = container;
+  setDefaultOwner(container);
+  app.rootElement = "#ember-testing";
+  app.setupForTesting();
+  app.testing = false;
+  if (!started) {
+    app.start();
+    started = true;
+  }
+
+  app.SiteSettings = settings;
+  registerObjects(container, app);
+  return app;
+}
+
+export default function setupTests(config) {
   sinon.config = {
     injectIntoThis: false,
     injectInto: null,
@@ -69,11 +90,6 @@ export default function setupTests(app, container) {
   // Stop the message bus so we don't get ajax calls
   MessageBus.stop();
 
-  app.rootElement = "#ember-testing";
-  app.setupForTesting();
-  app.SiteSettings = currentSettings();
-  app.start();
-  bootbox.$body = $("#ember-testing");
   $.fn.modal = AcceptanceModal;
 
   // disable logster error reporting
@@ -123,7 +139,10 @@ export default function setupTests(app, container) {
   });
 
   QUnit.testStart(function (ctx) {
+    bootbox.$body = $("#ember-testing");
     let settings = resetSettings();
+    app = createApplication(config, settings);
+
     server = createPretender;
     server.handlers = [];
     applyDefaultHandlers(server);
@@ -226,7 +245,4 @@ export default function setupTests(app, container) {
 
   // forces 0 as duration for all jquery animations
   jQuery.fx.off = true;
-  setApplication(app);
-  setDefaultOwner(container);
-  resetSite();
 }
