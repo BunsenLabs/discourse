@@ -77,11 +77,13 @@ discourseModule("Integration | Component | Widget | post-stream", function (
       // look for special class bindings
       assert.equal(
         queryAll(".topic-post:nth-of-type(1).topic-owner").length,
+        queryAll(".topic-post:eq(0).topic-owner").length,
         1,
         "it applies the topic owner class"
       );
       assert.equal(
         queryAll(".topic-post:nth-of-type(1).group-trout").length,
+        queryAll(".topic-post:eq(0).group-trout").length,
         1,
         "it applies the primary group class"
       );
@@ -153,4 +155,4 @@ discourseModule("Integration | Component | Widget | post-stream", function (
       );
     },
   });
-});
+);
