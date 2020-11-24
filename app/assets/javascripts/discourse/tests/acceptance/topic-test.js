@@ -298,7 +298,7 @@ acceptance("Topic featured links", function (needs) {
 
     await click(".toggle-admin-menu");
     await click(".topic-admin-pin .btn");
-    await click(".btn-primary:last");
+    await click(".make-banner");
 
     await click(".toggle-admin-menu");
     await click(".topic-admin-visible .btn");
