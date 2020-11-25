@@ -1,5 +1,5 @@
 import { later } from "@ember/runloop";
-import discourseDebounce from "discourse/lib/debounce";
+import discourseDebounce from "discourse-common/lib/debounce";
 import {
   safariHacksDisabled,
   iOSWithVisualViewport,
@@ -145,7 +145,9 @@ function positioningWorkaround($fixedElement) {
     positioningWorkaround.blur(evt);
   };
 
-  var blurred = discourseDebounce(blurredNow, INPUT_DELAY);
+  var blurred = function (evt) {
+    discourseDebounce(this, blurredNow, evt, INPUT_DELAY);
+  };
 
   var positioningHack = function (evt) {
     let _this = this;
@@ -214,13 +216,19 @@ function positioningWorkaround($fixedElement) {
     }
   }
 
-  const checkForInputs = discourseDebounce(function () {
-    attachTouchStart(fixedElement, lastTouched);
+  const checkForInputs = function () {
+    discourseDebounce(
+      this,
+      function () {
+        attachTouchStart(fixedElement, lastTouched);
 
-    $fixedElement.find("input[type=text],textarea").each(function () {
-      attachTouchStart(this, positioningHack);
-    });
-  }, 100);
+        $fixedElement.find("input[type=text],textarea").each(function () {
+          attachTouchStart(this, positioningHack);
+        });
+      },
+      100
+    );
+  };
 
   positioningWorkaround.touchstartEvent = function (element) {
     var triggerHack = positioningHack.bind(element);

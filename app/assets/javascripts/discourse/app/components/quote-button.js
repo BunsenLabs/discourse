@@ -1,6 +1,6 @@
 import { schedule } from "@ember/runloop";
 import Component from "@ember/component";
-import discourseDebounce from "discourse/lib/debounce";
+import discourseDebounce from "discourse-common/lib/debounce";
 import toMarkdown from "discourse/lib/to-markdown";
 import {
   selectedText,
@@ -183,10 +183,9 @@ export default Component.extend({
 
     const { isWinphone, isAndroid } = this.capabilities;
     const wait = isWinphone || isAndroid ? INPUT_DELAY : 25;
-    const onSelectionChanged = discourseDebounce(
-      () => this._selectionChanged(),
-      wait
-    );
+    const onSelectionChanged = () => {
+      discourseDebounce(this, this._selectionChanged, wait);
+    };
 
     $(document)
       .on("mousedown.quote-button", (e) => {

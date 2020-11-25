@@ -1,11 +1,5 @@
-import {
-  run,
-  cancel,
-  schedule,
-  later,
-  debounce,
-  throttle,
-} from "@ember/runloop";
+import { run, cancel, schedule, later, throttle } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import Component from "@ember/component";
 import discourseComputed, { observes } from "discourse-common/utils/decorators";
 import Composer from "discourse/models/composer";
@@ -76,7 +70,7 @@ export default Component.extend(KeyEnterEscape, {
         return;
       }
 
-      debounce(this, this.debounceMove, 300);
+      discourseDebounce(this, this.debounceMove, 300);
     });
   },
 

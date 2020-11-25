@@ -1,6 +1,6 @@
 import I18n from "I18n";
 import Controller from "@ember/controller";
-import discourseDebounce from "discourse/lib/debounce";
+import discourseDebounce from "discourse-common/lib/debounce";
 import Permalink from "admin/models/permalink";
 import { observes } from "discourse-common/utils/decorators";
 import { INPUT_DELAY } from "discourse-common/config/environment";
@@ -10,13 +10,17 @@ export default Controller.extend({
   loading: false,
   filter: null,
 
-  @observes("filter")
-  show: discourseDebounce(function () {
+  _debouncedShow() {
     Permalink.findAll(this.filter).then((result) => {
       this.set("model", result);
       this.set("loading", false);
     });
-  }, INPUT_DELAY),
+  },
+
+  @observes("filter")
+  show() {
+    discourseDebounce(this, this._debouncedShow, INPUT_DELAY);
+  },
 
   actions: {
     recordAdded(arg) {

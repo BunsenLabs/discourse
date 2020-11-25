@@ -1,4 +1,5 @@
-import { debounce, next, scheduleOnce } from "@ember/runloop";
+import { next, scheduleOnce } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import DiscourseURL from "discourse/lib/url";
 import MountWidget from "discourse/components/mount-widget";
 import { cloak, uncloak } from "discourse/widgets/post-stream";
@@ -309,12 +310,13 @@ export default MountWidget.extend({
   },
 
   _debouncedScroll() {
-    debounce(this, this._scrollTriggered, 10);
+    discourseDebounce(this, this._scrollTriggered, 10);
   },
 
   didInsertElement() {
     this._super(...arguments);
-    const debouncedScroll = () => debounce(this, this._scrollTriggered, 10);
+    const debouncedScroll = () =>
+      discourseDebounce(this, this._scrollTriggered, 10);
 
     this._previouslyNearby = {};
 

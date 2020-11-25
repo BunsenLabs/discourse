@@ -1,5 +1,6 @@
 import { makeArray } from "discourse-common/lib/helpers";
-import { debounce, schedule } from "@ember/runloop";
+import { schedule } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import Component from "@ember/component";
 import { number } from "discourse/lib/formatter";
 import loadScript from "discourse/lib/load-script";
@@ -11,7 +12,7 @@ export default Component.extend({
     this._super(...arguments);
 
     this.resizeHandler = () =>
-      debounce(this, this._scheduleChartRendering, 500);
+      discourseDebounce(this, this._scheduleChartRendering, 500);
   },
 
   didInsertElement() {
@@ -31,7 +32,7 @@ export default Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
 
-    debounce(this, this._scheduleChartRendering, 100);
+    discourseDebounce(this, this._scheduleChartRendering, 100);
   },
 
   _scheduleChartRendering() {

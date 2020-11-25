@@ -4,7 +4,7 @@ import discourseComputed, {
   on,
   observes,
 } from "discourse-common/utils/decorators";
-import { debounce } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import Component from "@ember/component";
 import { escapeExpression } from "discourse/lib/utilities";
 import { convertIconClass } from "discourse-common/lib/icon-library";
@@ -34,7 +34,7 @@ export default Component.extend({
   @observes("model.flair_icon")
   _loadSVGIcon(flairIcon) {
     if (flairIcon) {
-      debounce(this, this._loadIcon, 1000);
+      discourseDebounce(this, this._loadIcon, 1000);
     }
   },
 

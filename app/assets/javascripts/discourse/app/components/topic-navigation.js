@@ -1,5 +1,6 @@
 import EmberObject from "@ember/object";
-import { debounce, later } from "@ember/runloop";
+import { later } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import Component from "@ember/component";
 import { observes } from "discourse-common/utils/decorators";
 import showModal from "discourse/lib/show-modal";
@@ -53,7 +54,7 @@ export default Component.extend(PanEvents, {
   },
 
   _checkSize() {
-    debounce(this, this._performCheckSize, 300, true);
+    discourseDebounce(this, this._performCheckSize, 300, true);
   },
 
   // we need to store this so topic progress has something to init with

@@ -8,14 +8,8 @@ import { makeArray } from "discourse-common/lib/helpers";
 import UtilsMixin from "select-kit/mixins/utils";
 import Mixin from "@ember/object/mixin";
 import { isPresent, isEmpty, isNone } from "@ember/utils";
-import {
-  next,
-  debounce,
-  cancel,
-  throttle,
-  bind,
-  schedule,
-} from "@ember/runloop";
+import { next, cancel, throttle, bind, schedule } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import { Promise } from "rsvp";
 import PluginApiMixin, {
   applyContentPluginApiCallbacks,
@@ -386,7 +380,7 @@ export default Component.extend(
         cancel(this._searchPromise);
       }
 
-      debounce(this, this._debouncedInput, event.target.value, 200);
+      discourseDebounce(this, this._debouncedInput, event.target.value, 200);
     },
 
     _debouncedInput(filter) {

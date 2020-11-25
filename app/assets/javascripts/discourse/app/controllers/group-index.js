@@ -2,7 +2,7 @@ import Controller, { inject as controller } from "@ember/controller";
 import { gt } from "@ember/object/computed";
 import discourseComputed, { observes } from "discourse-common/utils/decorators";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import discourseDebounce from "discourse/lib/debounce";
+import discourseDebounce from "discourse-common/lib/debounce";
 import { action } from "@ember/object";
 
 export default Controller.extend({
@@ -19,9 +19,15 @@ export default Controller.extend({
   showActions: false,
 
   @observes("filterInput")
-  _setFilter: discourseDebounce(function () {
-    this.set("filter", this.filterInput);
-  }, 500),
+  _setFilter() {
+    discourseDebounce(
+      this,
+      function () {
+        this.set("filter", this.filterInput);
+      },
+      500
+    );
+  },
 
   @observes("order", "asc", "filter")
   _filtersChanged() {

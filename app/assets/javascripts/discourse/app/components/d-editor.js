@@ -1,5 +1,6 @@
 import I18n from "I18n";
-import { debounce, later, next, schedule, scheduleOnce } from "@ember/runloop";
+import { later, next, schedule, scheduleOnce } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 import Mousetrap from "mousetrap";
@@ -415,7 +416,7 @@ export default Component.extend({
     if (isTesting()) {
       this._updatePreview();
     } else {
-      debounce(this, this._updatePreview, 30);
+      discourseDebounce(this, this._updatePreview, 30);
     }
   },
 

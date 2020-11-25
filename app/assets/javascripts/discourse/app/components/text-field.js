@@ -2,7 +2,8 @@ import I18n from "I18n";
 import TextField from "@ember/component/text-field";
 import discourseComputed from "discourse-common/utils/decorators";
 import { siteDir, isRTL, isLTR } from "discourse/lib/text-direction";
-import { next, debounce, cancel } from "@ember/runloop";
+import { next, cancel } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 
 const DEBOUNCE_MS = 500;
 
@@ -38,7 +39,11 @@ export default TextField.extend({
       }
       if (this.onChange) {
         cancel(this._timer);
-        this._timer = debounce(this, this._debouncedChange, DEBOUNCE_MS);
+        this._timer = discourseDebounce(
+          this,
+          this._debouncedChange,
+          DEBOUNCE_MS
+        );
       }
     }
   },

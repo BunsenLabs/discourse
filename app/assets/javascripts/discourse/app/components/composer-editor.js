@@ -1,6 +1,7 @@
 import getURL from "discourse-common/lib/get-url";
 import I18n from "I18n";
-import { run, debounce, later, next, schedule, throttle } from "@ember/runloop";
+import { run, later, next, schedule, throttle } from "@ember/runloop";
+import discourseDebounce from "discourse-common/lib/debounce";
 import Component from "@ember/component";
 import userSearch from "discourse/lib/user-search";
 import discourseComputed, {
@@ -905,7 +906,7 @@ export default Component.extend({
       // Paint mentions
       const unseenMentions = linkSeenMentions($preview, this.siteSettings);
       if (unseenMentions.length) {
-        debounce(
+        discourseDebounce(
           this,
           this._renderUnseenMentions,
           $preview,
@@ -920,7 +921,7 @@ export default Component.extend({
       // Paint category and tag hashtags
       const unseenHashtags = linkSeenHashtags($preview);
       if (unseenHashtags.length > 0) {
-        debounce(this, this._renderUnseenHashtags, $preview, 450);
+        discourseDebounce(this, this._renderUnseenHashtags, $preview, 450);
       }
 
       // Paint oneboxes
@@ -947,7 +948,7 @@ export default Component.extend({
         }
       };
 
-      debounce(this, paintFunc, 450);
+      discourseDebounce(this, paintFunc, 450);
 
       // Short upload urls need resolution
       resolveAllShortUrls(ajax, this.siteSettings, $preview[0]);

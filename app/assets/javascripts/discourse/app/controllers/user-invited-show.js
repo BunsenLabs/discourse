@@ -2,7 +2,7 @@ import I18n from "I18n";
 import { equal, reads } from "@ember/object/computed";
 import Controller from "@ember/controller";
 import Invite from "discourse/models/invite";
-import discourseDebounce from "discourse/lib/debounce";
+import discourseDebounce from "discourse-common/lib/debounce";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import discourseComputed, { observes } from "discourse-common/utils/decorators";
 import { INPUT_DELAY } from "discourse-common/config/environment";
@@ -26,13 +26,19 @@ export default Controller.extend({
   },
 
   @observes("searchTerm")
-  _searchTermChanged: discourseDebounce(function () {
-    Invite.findInvitedBy(
-      this.user,
-      this.filter,
-      this.searchTerm
-    ).then((invites) => this.set("model", invites));
-  }, INPUT_DELAY),
+  _searchTermChanged() {
+    discourseDebounce(
+      this,
+      function () {
+        Invite.findInvitedBy(
+          this.user,
+          this.filter,
+          this.searchTerm
+        ).then((invites) => this.set("model", invites));
+      },
+      INPUT_DELAY
+    );
+  },
 
   inviteRedeemed: equal("filter", "redeemed"),
   invitePending: equal("filter", "pending"),

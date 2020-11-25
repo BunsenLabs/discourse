@@ -11,7 +11,7 @@ import Post from "discourse/models/post";
 import { buildQuote } from "discourse/lib/quote";
 import QuoteState from "discourse/lib/quote-state";
 import Topic from "discourse/models/topic";
-import discourseDebounce from "discourse/lib/debounce";
+import discourseDebounce from "discourse-common/lib/debounce";
 import isElementInViewport from "discourse/lib/is-element-in-viewport";
 import { ajax } from "discourse/lib/ajax";
 import discourseComputed, { observes } from "discourse-common/utils/decorators";
@@ -1500,15 +1500,22 @@ export default Controller.extend(bufferedProperty("model"), {
     );
   },
 
-  _scrollToPost: discourseDebounce(function (postNumber) {
-    const $post = $(`.topic-post article#post_${postNumber}`);
+  _scrollToPost(postNumber) {
+    discourseDebounce(
+      this,
+      function () {
+        const $post = $(`.topic-post article#post_${postNumber}`);
 
-    if ($post.length === 0 || isElementInViewport($post)) {
-      return;
-    }
+        if ($post.length === 0 || isElementInViewport($post)) {
+          return;
+        }
 
-    $("html, body").animate({ scrollTop: $post.offset().top }, 1000);
-  }, 500),
+        $("html, body").animate({ scrollTop: $post.offset().top }, 1000);
+      },
+      postNumber,
+      500
+    );
+  },
 
   unsubscribe() {
     // never unsubscribe when navigating from topic to topic
